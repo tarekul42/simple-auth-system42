@@ -6,6 +6,7 @@ import Login from "./Pages/Login/Login.jsx";
 import SignUp from "./Pages/SignUp/SignUp.jsx";
 import PrimaryAuth from "./Pages/PrimaryAuth/PrimaryAuth.jsx";
 import AuthProvider from "./Providers/AuthProvider.jsx";
+import ForgetPassword from "./Pages/ForgetPassword/ForgetPassword.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -15,6 +16,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/" element={<PrimaryAuth />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

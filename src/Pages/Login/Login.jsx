@@ -2,6 +2,7 @@ import useAuth from "../../Hooks/UseAuth";
 
 const Login = () => {
   const { login } = useAuth();
+  const storedEmail = localStorage.getItem("userEmail");
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -42,6 +43,7 @@ const Login = () => {
                         name="email"
                         className="input"
                         placeholder="Email"
+                        defaultValue={storedEmail}
                       />
                       <label className="fieldset-label">Password</label>
                       <input

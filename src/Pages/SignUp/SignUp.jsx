@@ -1,7 +1,9 @@
+import { sendEmailVerification } from "firebase/auth";
 import useAuth from "../../Hooks/UseAuth";
 
 const SignUp = () => {
   const {createUser} = useAuth();
+  const storedEmail = localStorage.getItem("userEmail");
 
     const handleSignUp = e =>{
         e.preventDefault();
@@ -14,11 +16,15 @@ const SignUp = () => {
 
         console.log(name, email, password, confirmPassword)
 
+
         createUser(email, confirmPassword).then((userCredential) => {
           // Signed up 
           const user = userCredential.user;
           // ...
           console.log(user)
+          return sendEmailVerification(user).then(() => {
+            console.log("Verification email sent.");
+          });
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -52,6 +58,7 @@ const SignUp = () => {
                         name="email"
                         className="input my-4"
                         placeholder="Enter your email here"
+                        defaultValue={storedEmail}
                       />
                       {/* <label className="fieldset-label">Password</label> */}
                       <input

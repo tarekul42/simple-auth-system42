@@ -11,6 +11,10 @@ const PrimaryAuth = () => {
     const inputField = e.target;
     const email = inputField.email.value;
     console.log(email)
+    if (email) {
+      localStorage.setItem("userEmail", email); // ✅ Store email in localStorage
+      console.log("Email saved:", email);
+    }
   };
 
   return (
