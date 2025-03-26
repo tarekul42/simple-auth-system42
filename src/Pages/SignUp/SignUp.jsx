@@ -1,4 +1,3 @@
-import React, { use } from "react";
 import useAuth from "../../Hooks/UseAuth";
 
 const SignUp = () => {
