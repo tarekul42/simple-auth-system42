@@ -1,10 +1,19 @@
-import React from "react";
+import useAuth from "../../Hooks/UseAuth";
 
 const GithubLogin = () => {
+  const { githubSignIn } = useAuth();
+
+  const handleGithubSignIn = () =>{
+
+    githubSignIn().then(result => console.log(result))
+    
+    console.log("i've got clicked")
+  }
+
   return (
     <>
       {/* GitHub */}
-      <button className="btn bg-black text-white border-black">
+      <button onClick={handleGithubSignIn} className="btn bg-black text-white border-black">
         <svg
           aria-label="GitHub logo"
           width="16"
