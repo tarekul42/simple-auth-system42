@@ -1,6 +1,8 @@
-import React from "react";
+import React, { use } from "react";
+import useAuth from "../../Hooks/UseAuth";
 
 const SignUp = () => {
+  const {createUser} = useAuth();
 
     const handleSignUp = e =>{
         e.preventDefault();
@@ -12,6 +14,19 @@ const SignUp = () => {
         const confirmPassword = inputField.confirmPassword.value;
 
         console.log(name, email, password, confirmPassword)
+
+        createUser(email, confirmPassword).then((userCredential) => {
+          // Signed up 
+          const user = userCredential.user;
+          // ...
+          console.log(user)
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+          console.log(errorCode, errorMessage)
+        });
     }
 
   return (
