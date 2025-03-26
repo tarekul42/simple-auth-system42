@@ -1,9 +1,9 @@
-import React from "react";
 import { createContext } from "react";
 import app from "../Firebase/firebase.config";
 import {
-  GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -16,7 +16,7 @@ const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
   const provider = new GoogleAuthProvider();
 
-  const register = (email, password) => {
+  const createUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
@@ -33,16 +33,14 @@ const AuthProvider = ({ children }) => {
   };
 
   const authInfo = {
-    register,
+    createUser,
     login,
     googleSignIn,
     logOut,
   };
 
   return (
-    <AuthContext.Provider value={authInfo}>
-        {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
 };
 
