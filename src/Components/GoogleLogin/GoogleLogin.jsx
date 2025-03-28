@@ -1,12 +1,21 @@
 import React from "react";
 import useAuth from "../../Hooks/UseAuth";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
 
 const GoogleLogin = () => {
   const { googleSignIn } = useAuth();
+  const axiosPublic = useAxiosPublic();
 
   const handleGoogleSignIn = () => {
-    googleSignIn().then((result) => console.log(result));
-    console.log("i've got clicked")
+    googleSignIn().then((result) => {
+      console.log(result.user);
+
+      const loggedUser = result.user;
+      axiosPublic.post("/users", loggedUser).then((res) => {
+        console.log(res.data);
+      });
+    });
+    console.log("i've got clicked");
   };
 
   return (

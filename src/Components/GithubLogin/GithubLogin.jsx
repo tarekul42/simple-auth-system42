@@ -1,19 +1,29 @@
 import useAuth from "../../Hooks/UseAuth";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
 
 const GithubLogin = () => {
   const { githubSignIn } = useAuth();
+  const axiosPublic = useAxiosPublic();
 
-  const handleGithubSignIn = () =>{
+  const handleGithubSignIn = () => {
+    githubSignIn().then((result) => {
+      const loggedUser = result.user;
+      console.log(loggedUser)
+      axiosPublic.post("/users", loggedUser).then((res) => {
+        console.log(res.data);
+      });
+    });
 
-    githubSignIn().then(result => console.log(result))
-    
-    console.log("i've got clicked")
-  }
+    console.log("i've got clicked");
+  };
 
   return (
     <>
       {/* GitHub */}
-      <button onClick={handleGithubSignIn} className="btn bg-black text-white border-black">
+      <button
+        onClick={handleGithubSignIn}
+        className="btn bg-black text-white border-black"
+      >
         <svg
           aria-label="GitHub logo"
           width="16"
