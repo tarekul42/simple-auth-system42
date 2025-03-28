@@ -11,7 +11,21 @@ const GoogleLogin = () => {
       console.log(result.user);
 
       const loggedUser = result.user;
-      axiosPublic.post("/users", loggedUser).then((res) => {
+
+      // ✅ Filter out unnecessary/sensitive fields
+      const userToStore = {
+        uid: loggedUser.uid,
+        email: loggedUser.email,
+        emailVerified: loggedUser.emailVerified,
+        displayName: loggedUser.displayName,
+        isAnonymous: loggedUser.isAnonymous,
+        photoURL: loggedUser.photoURL,
+        providerData: loggedUser.providerData,
+        createdAt: loggedUser.metadata?.createdAt,
+        lastLoginAt: loggedUser.metadata?.lastLoginAt,
+      };
+
+      axiosPublic.post("/users", userToStore).then((res) => {
         console.log(res.data);
       });
     });

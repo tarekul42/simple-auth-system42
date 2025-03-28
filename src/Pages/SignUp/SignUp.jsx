@@ -1,38 +1,83 @@
 import { sendEmailVerification } from "firebase/auth";
 import useAuth from "../../Hooks/UseAuth";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
 
 const SignUp = () => {
-  const {createUser} = useAuth();
+  const { createUser, updateUserProfile } = useAuth();
   const storedEmail = localStorage.getItem("userEmail");
+  const axiosPublic = useAxiosPublic();
 
-    const handleSignUp = e =>{
-        e.preventDefault();
+  const handleSignUp = (e) => {
+    e.preventDefault();
 
-        const inputField = e.target;
-        const name = inputField.name.value;
-        const email = inputField.email.value;
-        const password = inputField.password.value;
-        const confirmPassword = inputField.confirmPassword.value;
+    // ✅ Access form fields correctly
+    const form = e.target;
+    const name = form.elements["name"].value; // Get name correctly
+    const email = form.elements["email"].value;
+    const password = form.elements["password"].value;
+    const confirmPassword = form.elements["confirmPassword"].value;
 
-        console.log(name, email, password, confirmPassword)
+    console.log(name, email, password, confirmPassword);
 
+    createUser(email, password)
+      .then((userCredential) => {
+        // Signed up
+        const loggedUser = userCredential.user;
+        // ...
+        console.log("User Created:", loggedUser);
 
-        createUser(email, confirmPassword).then((userCredential) => {
-          // Signed up 
-          const user = userCredential.user;
-          // ...
-          console.log(user)
-          return sendEmailVerification(user).then(() => {
-            console.log("Verification email sent.");
+        // ✅ Send Email Verification
+        sendEmailVerification(loggedUser)
+          .then(() => {
+            console.log("Verification email sent! ✅");
+            alert(
+              "A verification email has been sent. Please check your inbox."
+            );
+          })
+          .catch((error) => {
+            console.error("Error sending email verification:", error);
           });
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          // ..
-          console.log(errorCode, errorMessage)
-        });
-    }
+
+        // ✅ Update User Profile (set displayName)
+        updateUserProfile(loggedUser, { displayName: name })
+          .then(() => {
+            // Profile updated!
+            // ...
+            console.log("Profile updated successfully!");
+          })
+          .catch((error) => {
+            console.error("Error updating profile:", error);
+            alert("Failed to update profile. Please try again later.");
+          });
+
+        // ✅ Prepare user object for backend
+        const user = {
+          uid: loggedUser?.uid,
+          email: loggedUser?.email,
+          emailVerified: loggedUser?.emailVerified,
+          displayName: name,
+          isAnonymous: loggedUser?.isAnonymous,
+          photoURL: loggedUser?.photoURL,
+          providerData: loggedUser?.providerData,
+          createdAt: loggedUser?.metadata?.createdAt,
+          lastLoginAt: loggedUser?.metadata?.lastLoginAt,
+        };
+
+        console.log(user);
+
+        axiosPublic
+          .post("/users", user)
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((error) => {
+            console.error("Error sending user to backend:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error during sign-up:", error.code, error.message);
+      });
+  };
 
   return (
     <>

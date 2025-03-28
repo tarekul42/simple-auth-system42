@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import { GithubAuthProvider } from "firebase/auth";
 
@@ -36,6 +37,10 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, githubProvider);
   };
 
+  const updateUserProfile = (user, profileData) =>{
+    return updateProfile(user, profileData)
+  }
+
   const resetPasswordOnEmail = (email) =>{
     return sendPasswordResetEmail(auth, email);
   };
@@ -49,6 +54,7 @@ const AuthProvider = ({ children }) => {
     login,
     googleSignIn,
     githubSignIn,
+    updateUserProfile,
     resetPasswordOnEmail,
     logOut,
   };
