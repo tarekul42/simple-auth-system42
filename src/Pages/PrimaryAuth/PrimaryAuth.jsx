@@ -1,20 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import GoogleLogin from "../../Components/GoogleLogin/GoogleLogin";
 import GithubLogin from "../../Components/GithubLogin/GithubLogin";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+const axiosPublic = useAxiosPublic();
 
 const PrimaryAuth = () => {
-    
-  const handleEmailChecking = (e) => {
-    e.preventDefault();
-    // console.log("I've got clicked");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-    const inputField = e.target;
-    const email = inputField.email.value;
-    console.log(email)
-    if (email) {
-      localStorage.setItem("userEmail", email); // ✅ Store email in localStorage
-      console.log("Email saved:", email);
+  const checkUserExists = async () => {
+    if (!email) {
+      setMessage("Please enter your email.");
+      return;
     }
+    setLoading(true);
+    setMessage("Checking....");
+    try {
+      const response = await axiosPublic.get(`/check-user?email=${email}`);
+      console.log(response);
+      if (response.data.exists) {
+        setMessage("User found! Redirecting to login....");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1000);
+      } else {
+        setMessage("User not found! Redirecting to sign-up....");
+        setTimeout(() => {
+          window.location.href = "/signup";
+        }, 1000);
+      }
+    } catch (error) {
+      setMessage("Error Checking user. Please try again.");
+    }
+    setLoading(false);
   };
 
   return (
@@ -25,7 +44,7 @@ const PrimaryAuth = () => {
             <div className="hero-content">
               <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                 <div className="card-body">
-                  <form onSubmit={handleEmailChecking}>
+                  <div>
                     <fieldset className="fieldset">
                       <label className="fieldset-label">Email</label>
                       <input
@@ -33,14 +52,24 @@ const PrimaryAuth = () => {
                         name="email"
                         className="input"
                         placeholder="Enter your email here"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                       />
-                      <input
+                      {/* <input
                         className="btn btn-neutral mt-4"
                         type="submit"
-                        value="Check"
-                      />
+                        value="Continue"
+                      /> */}
+                      <button
+                        onClick={checkUserExists}
+                        className="btn btn-neutral mt-4"
+                        disabled={loading}
+                      >
+                        {loading ? "Checking...." : "Continue"}
+                      </button>
+                      <p>{message}</p>
                     </fieldset>
-                  </form>
+                  </div>
                   <div className="divider">OR</div>
                   <div className="flex flex-col gap-4">
                     <GoogleLogin />
