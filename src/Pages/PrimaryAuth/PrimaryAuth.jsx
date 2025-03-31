@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import GoogleLogin from "../../Components/GoogleLogin/GoogleLogin";
 import GithubLogin from "../../Components/GithubLogin/GithubLogin";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
-const axiosPublic = useAxiosPublic();
+import { useNavigate } from "react-router";
 
 const PrimaryAuth = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  
+  const axiosPublic = useAxiosPublic();
+  const navigate = useNavigate();
 
   const checkUserExists = async () => {
     if (!email) {
@@ -22,12 +26,12 @@ const PrimaryAuth = () => {
       if (response.data.exists) {
         setMessage("User found! Redirecting to login....");
         setTimeout(() => {
-          window.location.href = "/login";
+         navigate("/login");
         }, 1000);
       } else {
         setMessage("User not found! Redirecting to sign-up....");
         setTimeout(() => {
-          window.location.href = "/signup";
+          navigate("/signup");
         }, 1000);
       }
     } catch (error) {
