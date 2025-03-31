@@ -9,7 +9,6 @@ const PrimaryAuth = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
 
@@ -23,6 +22,10 @@ const PrimaryAuth = () => {
     try {
       const response = await axiosPublic.get(`/check-user?email=${email}`);
       console.log(response);
+
+      // store the email on the localstorage
+      localStorage.setItem("userEmail", email);
+
       if (response.data.exists) {
         setMessage("User found! Redirecting to login....");
         setTimeout(() => {
